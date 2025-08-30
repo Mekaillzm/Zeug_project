@@ -3,6 +3,7 @@
 A small app to track and update everyday activities.
 Built on Google Apps Script and deployed as a Web App.
 
+
 # Warning
 Some text in the code and the sheet may be in German. Translations are provided in the setup instructions, which are entirely in English.
 A translated example Google Sheet is also available as "Zeug (English Translation).xlsx"; however, the main code is built off of the German version. 
@@ -16,6 +17,19 @@ The positions of cells in the Sheet are hard-coded into the code as shown by the
 -Google Account, with working email
 -A Google Sheet with the sheets, "Zeug", "Dehnungs-Historie" and "Übungshistorie" (translation: "Stuff", "Stretch-History" and "Exercise History")
 -Apple Shortcuts on iOS or HTTP Shortcuts on Android
+
+# Notes
+
+A Routine, as used in this guide, represents a task carried out regularly.
+Each Routine can be set to "Yes" or "No". 
+Yes means that the action associated with the Routine should be carried out today, and vice versa.
+
+For example, if the Phone-bill Routine is set to yes, then you will receive email reminders to pay this bill, until you update the bill status to "No".
+
+Exceptions to this are the Exercise and Stretch Routines.
+There are three Exercise Routines, "Biceps & Back", "Triceps & Shoulders" and "Legs", each describing which muscle group should be exercised in the next workout session.
+
+There are two stretch routines, "1" and "2", each detailing two unique sets of stretches to be performed on alternating days.
 
 # Setup Instructions
 
@@ -147,6 +161,22 @@ Phone Bill Routine
 - For example, the value will be "No" at first. Then,  hourlyUpdate() will query it every hour, setting it to "Yes" permanently when the billing date is 6 hours away, until you reset it to "No", by using the Tap To Update feature, or the POST command with value = 5
 - The billing cycle duration can be configured in E32. Enter the number of days the phone package lasts here. The due date will be set to 11:59 PM on the final day.
 
+
+# Logs
+Logs for the exercise and stretch routine are also entered automatically.
+The curretn routine and timestamp are stored.
+
+The routines, alongside their designated numeric code are entered below. Note that these codes are arbitrary, but still hard-coded.
+
+Routines:
+
+1. Exercise:
+   - Biceps & Back: 1
+   - Tricepts & Shoulders: 2
+   - Legs: 3
+2: Stretch:
+  - 1: 1
+  - 2: 2
 
 
 
