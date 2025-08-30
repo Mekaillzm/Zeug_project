@@ -128,5 +128,25 @@ Car Tyre Air Refill Routine:
 - Row: 24
 - Swap values: "Yes" and "No" (or "Ja" and "Nein" in German)
 - This swaps between the two boolean values, "Yes" and "No" whenever it is called from Tap To Update
-- Daily update also affects this, setting it to "Yes" after the number of days set in D19 has elapsed (4 by default)
+- Daily update also affects this, setting it to "Yes" after the number of days set in D24 has elapsed (14 by default)
+- For example, the value will be "No" at first. Then, dailyUpdate() will query it every day, setting it to "Yes" permanently after 14 days, until you reset it to "No", by using the Tap To Update feature
+  
+ 
+Data Backup Routine:
+- Row: 29
+- Swap values: "Yes" and "No" (or "Ja" and "Nein" in German)
+- This swaps between the two boolean values, "Yes" and "No" whenever it is called from Tap To Update
+- Daily update also affects this, setting it to "Yes" after the number of days set in D29 has elapsed (6 by default)
+- For example, the value will be "No" at first. Then, dailyUpdate() will query it every day, setting it to "Yes" permanently after 6 days, until you reset it to "No", by using the Tap To Update feature
+
+Phone Bill Routine
+- Row: 32
+- Swap values: "Yes" and "No" (or "Ja" and "Nein" in German)
+- This swaps between the two boolean values, "Yes" and "No" whenever it is called from Tap To Update
+- Hourly update also affects this, setting it to "Yes" after the Billing Date in D32 is at less than 6 hours away. Once it is 6 hours away, you will receive an hourly email reminder as well.
+- For example, the value will be "No" at first. Then,  hourlyUpdate() will query it every hour, setting it to "Yes" permanently when the billing date is 6 hours away, until you reset it to "No", by using the Tap To Update feature, or the POST command with value = 5
+- The billing cycle duration can be configured in E32. Enter the number of days the phone package lasts here. The due date will be set to 11:59 PM on the final day.
+
+
+
 
