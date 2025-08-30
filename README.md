@@ -33,10 +33,24 @@ There are two stretch routines, "1" and "2", each detailing two unique sets of s
 
 # Setup Instructions
 
-Run the code in a new Google Apps Script deployment. Deploy this as a web app, saving the deployment URL.
-
+Step 1:
 Create a Google Sheet using the template provided. Save the Sheet ID under the deployment information sheet, as well as the deployment URL. The version is optional.
 
+Paste the code provided in a new Google Apps Script deployment.
+In the uppermost function, getCurrentSpreadSheet(), enter the ID of your spreadsheet as a string in the constant SHEET_ID.
+
+Deploy your Apps Script code as a web app, saving the deployment URL.
+
+Ensure that there is s Sheet in your Spreadsheet called "Information". Within this, set the name of your main Sheet under the "Sheet Name" column (enter your value in A10). By default, this is "Stuff".
+Similarly, if you wish to change the names of the other two required sheets ("Exercise History" and "Stretch History), ensure these changes are reflected in the Information Sheet in cells A11 and A12.
+
+CAUTION: Do not change the name of the Information sheet.
+
+Next, enter the email you would like to receive updates in, in cell A14 of the Information Sheet.
+
+Choose which language option you would like to use and continue with the options and template for that alone.
+
+Step 2:
 Set the following event triggers:
 
 1. Daily
@@ -53,6 +67,7 @@ Set the following event triggers:
 
 Make sure to grant access permissions for your deployment.
 
+Step 3:
 Next, create an HTTP Shortcut or an Apple Shortcut.
 In either app, create an http request that carries out a POST command. Use the copied deployment ID here.
 
