@@ -35,6 +35,8 @@ There are two stretch routines, "1" and "2", each detailing two unique sets of s
 
 Run the code in a new Google Apps Script deployment. Deploy this as a web app, saving the deployment URL.
 
+Create a Google Sheet using the template provided. Save the Sheet ID under the deployment information sheet, as well as the deployment URL. The version is optional.
+
 Set the following event triggers:
 
 1. Daily
