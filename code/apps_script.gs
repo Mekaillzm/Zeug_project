@@ -54,7 +54,7 @@ function runOnEdit()
 }
 
 function onEdit(e) {
-  sheet = SpreadsheetApp.getActiveSpreadsheet();
+  sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   // Check if the edit happened on the correct sheet and cell (A7)
   const ZEUG_INDEX = 0; //the index of the main sheet, Zeug or Stuff by default
 
@@ -205,11 +205,13 @@ function createUpdateEmail(sheet, subject)
     var valueB29 = sheet.getRange("B29").getValue();
     var valueB32 = sheet.getRange("B32").getValue();
 
+    var falligkeitsdatum = sheet.getRange("D32").getValue(); //falligkeitsdatum - due date
+
     var haarNachricht = (valueB17 == "Ja") ? "Wasch dir bitte die Haare.\n" : "";
     var haarolNachricht = (valueB19 === "Ja") ? "Heute solltest du Haaröl verwenden.\n" : "";
     var dateiNachricht = (valueB29 === "Ja") ? "Sichere die Datei.\n" : "";
     var autoriefenNachricht = (valueB24 === "Ja") ? "Füll die Luft in den Reifen nach.\n" : "";
-    var handyNachricht = (valueB32 === "Ja") ? "Bezahl die Handyrechnung\n" : "";
+    var handyNachricht = (valueB32 === "Ja") ? `Bezahl die Handyrechnung bis zum ${falligkeitsdatum}.\n` : "";
 
     const HAAR = (haarNachricht === "" && haarolNachricht === "") ? "" : "\n\nHAAR\n";
     const AUTO = (autoriefenNachricht === "") ? "" : "\nAUTO\n";
@@ -222,6 +224,8 @@ function createUpdateEmail(sheet, subject)
 }
 
 function timePassed(lastUpdatedDate, minDays) {
+  var currentDate = new Date();
+
   if (!lastUpdatedDate) return true; // If no date is set, assume it needs an update
   var diffTime = currentDate - new Date(lastUpdatedDate); // Difference in time
   var diffDays = diffTime / (1000 * 3600 * 24); // Convert time difference to days
@@ -277,7 +281,7 @@ function dailyUpdate()
 
   }
 
-  createUpdateEmail(sheet, "Tägliches Update");
+  createUpdateEmail(sheet, `Tägliches Update: ${currentDate}`);
 
 
 }
@@ -298,7 +302,7 @@ function handyUpdate(sheet)
   const MINDESTENS_INTERVALL = 0.26;
   if (intervall < MINDESTENS_INTERVALL)
   {
-    sendEmailUpdate("WICHTIG: Hanyzahlung Errinerung", "Bitte bezahl die Handyrechnung. Der empfohlene Betrag ist 2 GB für mindestens 180 PKR. \n\nDas wäre alles.\nMit fruendlichen Grüßen,\nZeug App");
+    sendEmailUpdate(`WICHTIG: Hanyzahlung Errinerung: ${heute}`, `Bitte bezahlen Sie Ihre Handyrechnung bis zum ${falligkeitsdatum}. Der empfohlene Betrag ist 2 GB für mindestens 180 PKR. \n\nDas wäre alles.\nMit fruendlichen Grüßen,\nZeug App`);
 
     sheet.getRange("B32").setValue("Ja");
 
@@ -334,10 +338,8 @@ function doPost(e)
   //const data = JSON.parse(e.postData.contents || '{}');
   //const num = parseInt(data.number, 10);
 
-  //var valueString = e.parameter.value;
-  //var num = Number(valueString);
-
-  var num = 5;
+  var valueString = e.parameter.value;
+  var num = Number(valueString);
 
   const ss = getCurrentSpreadSheet();
   const sheet = getMainSheet();
@@ -360,7 +362,7 @@ function doPost(e)
 
     cellB7.setValue(value);
     const DEHNUNGS_INDEX = 1;
-    updateHistory(getSheetNames[DEHNUNGS_INDEX][0], valueB7);
+    updateHistory(getSheetNames()[DEHNUNGS_INDEX][0], valueB7);
     sheet.getRange("C7").setValue(new Date());
     }
 
@@ -386,6 +388,11 @@ function doPost(e)
     }
     if (num === 4)
     {
+      var valueB17 = sheet.getRange("B17").getValue();
+      var valueB19 = sheet.getRange("B19").getValue();
+      var valueB24 = sheet.getRange("B24").getValue();
+      var valueB29 = sheet.getRange("B29").getValue();
+      var valueB32 = sheet.getRange("B32").getValue();
       //Query and return response with data from the sheet
       createUpdateEmail(sheet, "Zeug Abfrage erfolgreich");
       return ContentService
@@ -400,7 +407,7 @@ function doPost(e)
 
     }
   // Return a JSON response
-  createUpdateEmail(sheet, "Zeug Aktualisiert");
+  createUpdateEmail(sheet, `Zeug Aktualisiert: ${num}`);
 
   return ContentService
     .createTextOutput(JSON.stringify({ status: 'Aktualisiert', erhalten: num }))
