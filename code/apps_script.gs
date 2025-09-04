@@ -1,13 +1,9 @@
 
-
-
-
-
 function getCurrentSpreadSheet()
 {
     //Sets hard-coded sheet value to be called by all other functions. Update with your sheet id.
     
-    const SHEET_ID = "1R4zj426pQ49obUQt-rnaSwhDWDtHj2GWAbPgwJei1vc";
+    const SHEET_ID = "YOUR_ID_HERE";
     var sheet = SpreadsheetApp.openById(SHEET_ID);
     return sheet;
 }
@@ -211,12 +207,13 @@ function createUpdateEmail(sheet, subject)
     var haarolNachricht = (valueB19 === "Ja") ? "Heute solltest du Haaröl verwenden.\n" : "";
     var dateiNachricht = (valueB29 === "Ja") ? "Sichere die Datei.\n" : "";
     var autoriefenNachricht = (valueB24 === "Ja") ? "Füll die Luft in den Reifen nach.\n" : "";
-    var handyNachricht = (valueB32 === "Ja") ? `Bezahl die Handyrechnung bis zum ${falligkeitsdatum}.\n` : "";
+    var handyNachricht = `Bezahl die Handyrechnung bis zum ${falligkeitsdatum}`;
 
     const HAAR = (haarNachricht === "" && haarolNachricht === "") ? "" : "\n\nHAAR\n";
     const AUTO = (autoriefenNachricht === "") ? "" : "\nAUTO\n";
-    const TECHNIK = (dateiNachricht === "" && handyNachricht === "") ? "" : "\nTECHNIK\n"
-    //`Nächste Dehnung: ${valueB7} \nNächste Übung: ${valueB9} \n\nHaarwaschmittel: ${valueB17} \nHaaröl: ${valueB19} \n\nAutoriefen: ${valueB24} \nDateisicherung: ${valueB29}
+    const TECHNIK = (dateiNachricht === "" && handyNachricht === "") ? "" : "\nTECHNIK\n";
+
+    // `Nächste Dehnung: ${valueB7} \nNächste Übung: ${valueB9} \n\nHaarwaschmittel: ${valueB17} \nHaaröl: ${valueB19} \n\nAutoriefen: ${valueB24} //\nDateisicherung: ${valueB29}
     var nachricht = `Guten Tag!\nHier sind die Aufgaben für heute.\n\nNächste Dehnung: ${valueB7} \nNächste Übung: ${valueB9}${HAAR}${haarNachricht}${haarolNachricht}${AUTO}${autoriefenNachricht}${TECHNIK}${dateiNachricht}${handyNachricht}\n\nDas wäre alles.\n\nMit freundlichen Grüßen,\nZeug App`;
 
     sendEmailUpdate(subject, nachricht);
@@ -393,10 +390,12 @@ function doPost(e)
       var valueB24 = sheet.getRange("B24").getValue();
       var valueB29 = sheet.getRange("B29").getValue();
       var valueB32 = sheet.getRange("B32").getValue();
+
+      var heute = new Date();
       //Query and return response with data from the sheet
-      createUpdateEmail(sheet, "Zeug Abfrage erfolgreich");
+      createUpdateEmail(sheet, `Zeug Abfrage erfolgreich: ${heute}`);
       return ContentService
-      .createTextOutput(JSON.stringify({ status: 'Abfrage erfolgreich', nachste_dehnung: valueB7, nachste_ubung: valueB9, haarwaschmittel: valueB17, haarol: valueB19, autoriefen: valueB24, dateisicherung: valueB29}))
+      .createTextOutput(JSON.stringify({ status: `Abfrage erfolgreich: ${heute}`, nachste_dehnung: valueB7, nachste_ubung: valueB9, haarwaschmittel: valueB17, haarol: valueB19, autoriefen: valueB24, dateisicherung: valueB29}))
       .setMimeType(ContentService.MimeType.JSON);
     }
     if (num === 5)
