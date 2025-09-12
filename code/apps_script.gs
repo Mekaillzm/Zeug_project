@@ -1,9 +1,13 @@
 
+
+
+
+
 function getCurrentSpreadSheet()
 {
     //Sets hard-coded sheet value to be called by all other functions. Update with your sheet id.
     
-    const SHEET_ID = "YOUR_ID_HERE";
+    const SHEET_ID = "1R4zj426pQ49obUQt-rnaSwhDWDtHj2GWAbPgwJei1vc";
     var sheet = SpreadsheetApp.openById(SHEET_ID);
     return sheet;
 }
@@ -270,7 +274,10 @@ function dailyUpdate()
   }
 
   var cellHandy = sheet.getRange("B32");
-  if (cellHandy.getValue() === "Nein" && timePassed(lastUpdateDatei, 6))
+  var nextUpdateHandy = sheet.getRange("D32").getValue();
+  
+
+  if (cellHandy.getValue() === "Nein" && timePassed(nextUpdateHandy, -24))
   {
     cellHandy.setValue("Ja");
     sheet.getRange("C32").setValue(currentDate);
@@ -296,7 +303,7 @@ function handyUpdate(sheet)
   var heute = new Date();
 
   var intervall = (falligkeitsdatum - heute) / (1000 * 3600 * 24);
-  const MINDESTENS_INTERVALL = 0.26;
+  const MINDESTENS_INTERVALL = 1;
   if (intervall < MINDESTENS_INTERVALL)
   {
     sendEmailUpdate(`WICHTIG: Hanyzahlung Errinerung: ${heute}`, `Bitte bezahlen Sie Ihre Handyrechnung bis zum ${falligkeitsdatum}. Der empfohlene Betrag ist 2 GB für mindestens 180 PKR. \n\nDas wäre alles.\nMit fruendlichen Grüßen,\nZeug App`);
