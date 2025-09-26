@@ -454,9 +454,13 @@ function doPost(e)
     {
       //Update the phone bill to 7 days from now.
       resetHandy(sheet);
-
+    }
+    if (num === 6)
+    {
+      toggleBoolCell("19");//Haarol
 
     }
+    
   // Return a JSON response
   createUpdateEmail(sheet, `Zeug Aktualisiert: ${num}`);
 
