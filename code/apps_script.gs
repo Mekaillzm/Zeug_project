@@ -1,8 +1,3 @@
-
-
-
-
-
 function getCurrentSpreadSheet()
 {
     //Sets hard-coded sheet value to be called by all other functions. Update with your sheet id.
@@ -188,6 +183,54 @@ function updateHistory(sheetName, type)
   
 }
 
+function getStreaks()
+{
+  //Returns streaks for the exercise and stretch history sheets. 
+  //A streak consists of the number of days in a row that the exercise was completed successfully on, counted backwards from the most recent day in the sheet.
+  //The algorithm that checks for a streak starts at 7 a.m. from the day of the last entry, going backwards by 24 hours in every iteration to 7 a.m. on the previous day.
+  //Each iteration checks the corresponding sheet value, if this is within 24 hours of the 7 a.m. value calculated in the iteration, the streak is incremented by 1.
+  var sheets = getSheetNames();
+  var ubungSheet = getCurrentSpreadSheet().getSheetByName(sheets[2]);
+  var dehnungSheet = getCurrentSpreadSheet().getSheetByName(sheets[1]);
+
+  var ubungRow = ubungSheet.getLastRow();
+  var dehnungRow = dehnungSheet.getLastRow();
+
+  function compare(sheet, row)
+  {
+    tag = sheet.getRange("A" + row).getValue();
+    var cur = new Date(tag);
+    cur.setHours(7, 0, 0, 0);
+    var diff = (cur - tag)/(60*60*1000);
+    if (diff < 0)
+    {
+    cur.setDate(cur.getDate() + 1);
+      
+    }
+    var count = 1;
+    var streak = 0;
+    while (diff < 24)
+    {
+      
+      //Logger.log(`${diff}, ${tag}, ${cur}`);
+      tag = sheet.getRange("A" + (row - count)).getValue();
+      //Logger.log(sheet.getRange("A" + (row - count)).getValue());
+      cur.setDate(cur.getDate() - 1);
+
+      diff = (cur - tag)/(60*60*1000);
+      count ++;
+      streak ++;
+      
+    }
+    return streak;
+  }
+  var ubungStreak = compare(ubungSheet, ubungRow);
+  var dehnungStreak = compare(dehnungSheet, dehnungRow);
+
+  return [dehnungStreak, ubungStreak];
+
+}
+
 function runCreateUpdateEmail()
 {
   var sheet = getMainSheet();
@@ -205,6 +248,8 @@ function createUpdateEmail(sheet, subject)
     var valueB29 = sheet.getRange("B29").getValue();
     var valueB32 = sheet.getRange("B32").getValue();
 
+    var streaks = getStreaks();
+
     var falligkeitsdatum = sheet.getRange("D32").getValue(); //falligkeitsdatum - due date
 
     var haarNachricht = (valueB17 == "Ja") ? "Wasch dir bitte die Haare.\n" : "";
@@ -218,7 +263,7 @@ function createUpdateEmail(sheet, subject)
     const TECHNIK = (dateiNachricht === "" && handyNachricht === "") ? "" : "\nTECHNIK\n";
 
     // `Nächste Dehnung: ${valueB7} \nNächste Übung: ${valueB9} \n\nHaarwaschmittel: ${valueB17} \nHaaröl: ${valueB19} \n\nAutoriefen: ${valueB24} //\nDateisicherung: ${valueB29}
-    var nachricht = `Guten Tag!\nHier sind die Aufgaben für heute.\n\nNächste Dehnung: ${valueB7} \nNächste Übung: ${valueB9}${HAAR}${haarNachricht}${haarolNachricht}${AUTO}${autoriefenNachricht}${TECHNIK}${dateiNachricht}${handyNachricht}\n\nDas wäre alles.\n\nMit freundlichen Grüßen,\nZeug App`;
+    var nachricht = `Guten Tag!\nHier sind die Aufgaben für heute.\n\nNächste Dehnung: ${valueB7}\nSerie: ${streaks[0]}\nNächste Übung: ${valueB9}\nSerie: ${streaks[1]}${HAAR}${haarNachricht}${haarolNachricht}${AUTO}${autoriefenNachricht}${TECHNIK}${dateiNachricht}${handyNachricht}\n\nDas wäre alles.\n\nMit freundlichen Grüßen,\nZeug App`;
 
     sendEmailUpdate(subject, nachricht);
 
